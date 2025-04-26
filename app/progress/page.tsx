@@ -25,7 +25,6 @@ import {
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
-  AlertDialogTrigger,
 } from "@/components/ui/alert-dialog"
 import { Progress } from "@/components/ui/progress"
 import { motion, AnimatePresence } from "framer-motion"
@@ -247,13 +246,11 @@ export default function ProgressPage() {
                 </div>
               </CardContent>
               <CardFooter>
-                <AlertDialog open={showResetDialog} onOpenChange={setShowResetDialog}>
-                  <AlertDialogTrigger asChild>
-                    <Button variant="destructive" size="sm" className="ml-auto">
-                      <AlertTriangle className="h-4 w-4 mr-1" />
-                      Reset Progress
-                    </Button>
-                  </AlertDialogTrigger>
+                <AlertDialog open={showResetDialog || false} onOpenChange={setShowResetDialog}>
+                  <Button variant="destructive" size="sm" className="ml-auto" onClick={() => setShowResetDialog(true)}>
+                    <AlertTriangle className="h-4 w-4 mr-1" />
+                    Reset Progress
+                  </Button>
                   <AlertDialogContent>
                     <AlertDialogHeader>
                       <AlertDialogTitle>Are you sure?</AlertDialogTitle>
@@ -376,12 +373,14 @@ export default function ProgressPage() {
                                 <div className="flex-grow">
                                   <h3 className="font-medium text-sm">{achievement.title}</h3>
                                   <p className="text-xs text-slate-500">{achievement.description}</p>
-                                  <div className="mt-2 w-full bg-slate-100 rounded-full h-1.5">
+                                  <div className="mt-2 w-full bg-slate-100 rounded-full h-1.5 overflow-hidden">
                                     <div
                                       className={`h-1.5 rounded-full ${
                                         achievement.unlocked ? "bg-green-500" : "bg-sky-400"
                                       }`}
-                                      style={{ width: `${(achievement.progress / achievement.total) * 100}%` }}
+                                      style={{
+                                        width: `${Math.min((achievement.progress / achievement.total) * 100, 100)}%`,
+                                      }}
                                     ></div>
                                   </div>
                                   <p className="text-xs text-slate-400 mt-1">

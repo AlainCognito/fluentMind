@@ -150,14 +150,6 @@ export default function Challenges() {
             <p className="text-slate-500">Try selecting a different difficulty level</p>
           </div>
         )}
-
-        {completedCount === totalCount && (
-          <div className="mt-6">
-            <Button asChild className="w-full bg-sky-600 hover:bg-sky-700">
-              <Link href="/summary">View Summary</Link>
-            </Button>
-          </div>
-        )}
       </div>
     </main>
   )

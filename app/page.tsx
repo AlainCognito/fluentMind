@@ -3,8 +3,20 @@
 import { Button } from "@/components/ui/button"
 import Link from "next/link"
 import { BookOpen, BrainCircuit, Lightbulb, Sparkles } from "lucide-react"
+import { useEffect, useState } from "react"
 
 export default function Home() {
+  const [completedCount, setCompletedCount] = useState(0)
+
+  useEffect(() => {
+    // Load progress from localStorage
+    const savedProgress = localStorage.getItem("challengeProgress")
+    if (savedProgress) {
+      const progress = JSON.parse(savedProgress)
+      setCompletedCount(progress.length)
+    }
+  }, [])
+
   return (
     <main className="flex min-h-screen flex-col items-center justify-center p-4 bg-gradient-to-b from-slate-50 to-sky-50">
       <div className="w-full max-w-md bg-white rounded-2xl shadow-md p-8 border border-sky-100">

@@ -42,6 +42,9 @@ export default function ChallengeCard({
   const [isCorrect, setIsCorrect] = useState<boolean | null>(null)
   const [isCompleted, setIsCompleted] = useState(false)
   const [isVideoPlaying, setIsVideoPlaying] = useState(false)
+  const [answerStatus, setAnswerStatus] = useState<("correct" | "incorrect" | "unanswered")[]>(
+    Array(blanks.length).fill("unanswered"),
+  )
 
   const inputRefs = useRef<(HTMLInputElement | null)[]>([])
   const videoRef = useRef<HTMLVideoElement>(null)
@@ -54,6 +57,7 @@ export default function ChallengeCard({
     setIsCorrect(null)
     setIsCompleted(false)
     setIsVideoPlaying(false)
+    setAnswerStatus(Array(blanks.length).fill("unanswered"))
   }, [index, blanks.length])
 
   // Video event listeners
@@ -102,11 +106,19 @@ export default function ChallengeCard({
   }
 
   const handleSubmit = () => {
-    const correct = answers.every((answer, index) => answer.toLowerCase().trim() === blanks[index].toLowerCase().trim())
+    // Check each answer individually
+    const newAnswerStatus = answers.map((answer, index) => {
+      const isAnswerCorrect = answer.toLowerCase().trim() === blanks[index].toLowerCase().trim()
+      return isAnswerCorrect ? "correct" : "incorrect"
+    })
 
-    setIsCorrect(correct)
+    setAnswerStatus(newAnswerStatus)
 
-    if (correct) {
+    // Overall correctness
+    const allCorrect = newAnswerStatus.every((status) => status === "correct")
+    setIsCorrect(allCorrect)
+
+    if (allCorrect) {
       setIsCompleted(true)
       onComplete()
     }
@@ -115,6 +127,7 @@ export default function ChallengeCard({
   const handleShowAnswers = () => {
     setShowAnswers(true)
     setAnswers([...blanks])
+    setAnswerStatus(Array(blanks.length).fill("correct"))
     setIsCompleted(true)
     onComplete()
   }
@@ -123,6 +136,26 @@ export default function ChallengeCard({
   const getInputWidth = (index: number) => {
     const length = blanks[index].length
     return `ch-${Math.max(length + 2, 8)}`
+  }
+
+  // Get input class based on answer status
+  const getInputClass = (index: number) => {
+    if (showAnswers) {
+      return "bg-green-50 border-green-500 text-green-700"
+    }
+
+    if (isCorrect === null) {
+      return "border-slate-300"
+    }
+
+    switch (answerStatus[index]) {
+      case "correct":
+        return "bg-green-50 border-green-500 text-green-700"
+      case "incorrect":
+        return "bg-red-50 border-red-300 text-red-700"
+      default:
+        return "border-slate-300"
+    }
   }
 
   const difficultyColor = getDifficultyColor(difficulty)
@@ -196,13 +229,9 @@ export default function ChallengeCard({
                     value={answers[i] || ""}
                     onChange={(e) => handleInputChange(i, e.target.value)}
                     disabled={showAnswers}
-                    className={`mx-1 px-2 py-1 border-b-2 focus:border-sky-500 outline-none text-center ${
-                      showAnswers
-                        ? "bg-green-50 border-green-500 text-green-700"
-                        : isCorrect === false
-                          ? "bg-red-50 border-red-300"
-                          : "border-slate-300"
-                    } ${getInputWidth(i)}`}
+                    className={`mx-1 px-2 py-1 border-b-2 focus:border-sky-500 outline-none text-center ${getInputClass(
+                      i,
+                    )} ${getInputWidth(i)}`}
                   />
                   <Popover>
                     <PopoverTrigger asChild>

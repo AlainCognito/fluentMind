@@ -110,3 +110,8 @@
     transform-origin: top center;
   }
 }
+
+/* Custom play button triangle */
+.border-l-16 {
+  border-left-width: 16px;
+}

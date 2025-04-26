@@ -9,8 +9,10 @@ import { BrainCircuit, BarChart } from "lucide-react"
 
 export default function Challenge({ params }: { params: Promise<{ id: string }> }) {
   const router = useRouter()
-  const { id } = use(params)  // <-- unwrap the Promise
-  const challengeId = Number.parseInt(id, 10)
+
+  // Safely unwrap params
+  const { id } = use(params)
+  const challengeId = typeof id === "string" ? Number.parseInt(id, 10) : 0
   const challenge = challenges[challengeId]
 
   const [progress, setProgress] = useState<number[]>([])
@@ -62,7 +64,7 @@ export default function Challenge({ params }: { params: Promise<{ id: string }> 
     if (nextId < challenges.length) {
       router.push(`/challenge/${nextId}`)
     } else {
-      router.push("/summary")
+      router.push("/challenges")
     }
   }
 

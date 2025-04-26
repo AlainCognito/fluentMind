@@ -4,7 +4,7 @@ import { useEffect, useState } from "react"
 import { Button } from "@/components/ui/button"
 import { useRouter } from "next/navigation"
 import { challenges } from "@/lib/data"
-import { CheckCircle, Trophy, BrainCircuit } from "lucide-react"
+import { BrainCircuit } from "lucide-react"
 
 export default function Summary() {
   const router = useRouter()
@@ -21,7 +21,6 @@ export default function Summary() {
 
   const completedCount = progress.length
   const totalCount = challenges.length
-  const isAllCompleted = completedCount === totalCount
 
   const resetProgress = () => {
     localStorage.setItem("challengeProgress", JSON.stringify([]))
@@ -37,33 +36,19 @@ export default function Summary() {
           <h1 className="text-2xl font-bold text-sky-700">FluentMind</h1>
         </div>
 
-        <div className="flex justify-center mb-6">
-          <div className="bg-green-100 p-4 rounded-full">
-            <Trophy className="h-16 w-16 text-green-600" />
-          </div>
-        </div>
-
-        <h1 className="text-2xl font-bold mb-2">Great job!</h1>
+        <h1 className="text-2xl font-bold mb-4">Your Progress</h1>
 
         <p className="text-slate-600 mb-6">
-          {isAllCompleted
-            ? "You've completed all challenges! Your English skills are improving with every exercise."
-            : `You've completed ${completedCount} out of ${totalCount} challenges. Keep going to master your skills!`}
+          You've completed {completedCount} out of {totalCount} challenges. Keep going to improve your skills!
         </p>
 
-        {isAllCompleted ? (
-          <div className="mb-6 flex justify-center">
-            <CheckCircle className="text-green-500 h-8 w-8" />
-          </div>
-        ) : (
-          <div className="mb-6 text-lg font-medium">
-            Progress: {completedCount}/{totalCount}
-          </div>
-        )}
+        <div className="mb-6 text-lg font-medium">
+          Progress: {completedCount}/{totalCount}
+        </div>
 
         <div className="space-y-3">
-          <Button onClick={() => router.push("/tree")} className="w-full bg-sky-600 hover:bg-sky-700">
-            View All Challenges
+          <Button onClick={() => router.push("/challenges")} className="w-full bg-sky-600 hover:bg-sky-700">
+            Continue Learning
           </Button>
 
           <Button variant="outline" onClick={resetProgress} className="w-full">
