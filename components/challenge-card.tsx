@@ -80,6 +80,21 @@ export default function ChallengeCard({
   // Split text by underscores to create input fields
   const textParts = text.split("___")
 
+  // Verify that we have the correct number of blanks and hints
+  useEffect(() => {
+    if (blanks.length !== hints.length) {
+      console.error(
+        `Challenge ${index}: Number of blanks (${blanks.length}) doesn't match number of hints (${hints.length})`,
+      )
+    }
+
+    if (textParts.length - 1 !== blanks.length) {
+      console.error(
+        `Challenge ${index}: Number of blanks in text (${textParts.length - 1}) doesn't match blanks array length (${blanks.length})`,
+      )
+    }
+  }, [blanks, hints, textParts, index])
+
   const handleInputChange = (index: number, value: string) => {
     const newAnswers = [...answers]
     newAnswers[index] = value
@@ -196,7 +211,7 @@ export default function ChallengeCard({
                         Hint
                       </button>
                     </PopoverTrigger>
-                    <PopoverContent className="w-auto p-2 text-sm">{hints[i]}</PopoverContent>
+                    <PopoverContent className="w-auto p-2 text-sm">{hints[i] || "No hint available"}</PopoverContent>
                   </Popover>
                 </span>
               )}
